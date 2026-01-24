@@ -1,0 +1,11 @@
+# Ignore XAMPP system files
+xampp/
+mysql/
+phpmyadmin/
+
+# Ignore environment files
+.env
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
