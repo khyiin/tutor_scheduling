@@ -12,9 +12,23 @@ if (isset($_POST['login'])) {
     $user = mysqli_fetch_assoc($result);
 
     if ($user && password_verify($password, $user['password'])) {
+        // 1. Save user info to Session
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['name'] = $user['fullname'];
-        header("Location: dashboard.php");
+        $_SESSION['role'] = $user['role']; // Storing the role for security checks
+
+        // 2. Redirect based on role
+        // Make sure these match the exact words in your database (e.g., 'teacher' vs 'Teacher')
+        if ($user['role'] == 'admin') {
+            header("Location: admin.php");
+        } elseif ($user['role'] == 'teacher') {
+            header("Location: dashboard.php");
+        } elseif ($user['role'] == 'client') {
+            header("Location: client.php");
+        } else {
+            // Fallback if role is undefined
+            header("Location: index.php");
+        }
         exit();
     } else {
         $error = "Invalid email or password";

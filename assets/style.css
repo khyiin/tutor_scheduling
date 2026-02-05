@@ -1,20 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 /* --- UNIVERSAL RESET --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', sans-serif;
+}
+
+body.index {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    
+    /* FIX: Force the body to take up the full screen height */
+    height: 100vh !important; 
+    width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    /* FIX: Ensure the image fills the entire screen without gaps */
+    background: url('../bg.jpg') no-repeat center center fixed !important;
+    background-size: cover !important; 
 }
 
 /* --- BACKGROUND SETUP --- */
-body {
+body:not(.client):not(.dashboard-body) {
     background: url('../bg.jpg') no-repeat center center fixed; 
     background-size: cover;
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
 }
 
 /* --- LANDING CONTENT (Container) --- */
@@ -101,17 +118,25 @@ input, select {
    (Adjusted for 100% coverage)
 ========================================= */
 
+:root {
+    --primary: #6366f1;
+    --primary-glow: rgba(99, 102, 241, 0.4);
+    --navy: #0f172a;
+    --text-muted: #64748b;
+}
+
+/* 1. WRAPPER & CONTAINER */
 .login-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100vw;
     height: 100vh;
-    padding: 0;
     margin: 0;
-    position: fixed; /* Ensures it stays on top of the bg */
+    position: fixed;
     top: 0;
     left: 0;
+    background: #f4f7fe; /* Matches dashboard background */
 }
 
 .login-container {
@@ -119,15 +144,24 @@ input, select {
     width: 100%;
     height: 100%;
     background: #fff;
-    box-shadow: none;
-    border-radius: 0; /* Square edges for full screen */
     overflow: hidden;
 }
 
+/* 2. IMAGE SIDE */
 .login-image {
-    flex: 1.2;
+    flex: 1.4;
     display: block;
     height: 100%;
+    position: relative;
+}
+
+/* Overlay to make the image blend with the theme */
+.login-image::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
 }
 
 .login-image img {
@@ -136,71 +170,99 @@ input, select {
     object-fit: cover;
 }
 
+/* 3. FORM SECTION */
 .login-form-section {
     flex: 1;
-    padding: 5% 8%;
+    padding: 5% 6%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     background: #fff;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+    z-index: 2;
 }
 
-/* Specifically styling the Login title to not be 5.2rem */
 .login-form-section h2 {
-    margin-bottom: 30px !important;
-    font-size: 3rem !important; 
-    text-align: center !important;
-    white-space: normal !important;
+    margin-bottom: 10px !important;
+    font-size: 2.2rem !important; 
+    font-weight: 800 !important;
+    color: var(--navy);
+    text-align: center !important; /* Professional alignment */
 }
 
+.login-form-section p {
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    font-size: 0.95rem;
+}
+
+/* 4. INPUTS WITH GLOW */
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .input-group input {
     width: 100%;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    padding: 16px 20px;
+    border: 2px solid #f1f5f9; /* Soft border */
+    background: #f8fafc;
+    border-radius: 14px;
     font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
 }
 
+/* The Input Glow Effect */
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 15px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+/* 5. THE PRIMARY BUTTON */
 .login-btn {
     width: 100%;
     padding: 18px !important;
-    background-color: #54b4f3 !important;
+    background: linear-gradient(135deg, var(--primary), #4f46e5) !important;
     color: white !important;
     border: none !important;
-    border-radius: 100px !important;
+    border-radius: 14px !important; /* Matched to inputs */
     cursor: pointer !important;
-    font-size: 1.2rem !important;
-    font-weight: 800 !important;
-    text-transform: uppercase;
-    box-shadow: 0 10px 20px rgba(84, 180, 243, 0.3) !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px;
+    transition: all 0.4s ease !important;
+    box-shadow: 0 10px 25px var(--primary-glow) !important;
+    margin-top: 10px;
 }
 
 .login-btn:hover {
-    background-color: #41a5e6 !important;
-    transform: translateY(-3px) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 15px 30px var(--primary-glow) !important;
+    filter: brightness(1.1);
 }
 
-/* Responsive */
+/* Responsive Fixes */
+@media (max-width: 1024px) {
+    .login-image { flex: 1; }
+}
+
 @media (max-width: 768px) {
-    .login-container {
-        flex-direction: column;
-    }
-    .login-image {
-        display: none;
-    }
-    .login-form-section {
-        padding: 40px 20px;
-    }
+    .login-container { flex-direction: column; }
+    .login-image { display: none; }
+    .login-form-section { padding: 40px 30px; }
 }
 
 /* --- REGISTRATION LINK STYLING --- */
@@ -224,4 +286,594 @@ input, select {
 .register-link a:hover {
     color: #41a5e6;
     text-decoration: underline;
+}
+
+/* Custom CSS for Tutor Scheduling Dashboard */
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --sidebar-bg: #1e1b4b;
+    --bg-light: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+}
+
+body.dashboard {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+}
+
+/* Sidebar Styling */
+.dashboard .sidebar { 
+    background: #1e1b4b !important;
+}
+
+.sidebar-logo {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.8rem 1rem;
+    color: #cbd5e1;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-link i {
+    width: 20px;
+    font-size: 1.1rem;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    color: #fca5a5;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    color: #f87171;
+}
+
+/* Header Styling */
+.main-header {
+    background: var(--white);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.search-bar {
+    background: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 300px;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.header-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.notification-bell {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    position: relative;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e2e8f0;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    padding: 2rem;
+}
+
+.welcome-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-text {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.sub-text {
+    color: var(--text-muted);
+}
+
+.quick-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.quick-btn {
+    flex: 1;
+    height: 52px;
+    background: #233876 !important; /* Dark Blue */
+    color: #ffffff !important;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #f1f5f9;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.icon-blue { background: #e0e7ff; color: #4338ca; }
+.icon-green { background: #dcfce7; color: #15803d; }
+.icon-purple { background: #f3e8ff; color: #7e22ce; }
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Table Section */
+.table-container {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+
+.table-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.custom-table th {
+    background: #f8fafc;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.custom-table td {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.student-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.small-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.subject-tag {
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.confirmed { background: #dcfce7; color: #166534; }
+.pending { background: #fef9c3; color: #854d0e; }
+
+.action-dots {
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.action-dots:hover {
+    color: var(--primary);
+}
+:root {
+    --primary: #6366f1;
+    --navy: #0f172a;
+    --blue-glow: rgba(59, 130, 246, 0.3);
+    --purple-glow: rgba(168, 85, 247, 0.3);
+    --green-glow: rgba(34, 197, 94, 0.3);
+}
+
+/* 1. FIXED VIEWPORT LOGIC */
+.dashboard-body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Exactly screen height */
+    width: 100vw;
+    overflow: hidden; /* Prevent page-wide scrolling */
+    background-color: #f4f7fe !important;
+    background-image: none !important;
+    font-family: 'Poppins', sans-serif;
+}
+
+.app-viewport {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    position: fixed; /* Forces it to ignore the body's centering */
+    top: 0;
+    left: 0;
+}
+
+/* 2. SIDEBAR (STAYS FIXED) */
+.sidebar {
+    width: 260px;
+    background: var(--navy) !important;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Prevents sidebar from squishing */
+    padding: 15px;
+}
+
+.sidebar-logo {
+    padding: 20px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-glow {
+    background: var(--primary);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 15px var(--primary);
+}
+
+.sidebar-nav { flex: 1; margin-top: 10px; }
+
+.nav-link {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 18px;
+    color: #94a3b8 !important;
+    text-decoration: none;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, var(--primary), #4f46e5) !important;
+    color: white !important;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+}
+
+/* 3. MAIN AREA LOGIC */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.dashboard-header {
+    background: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.header-info h1 { margin: 0; font-size: 1.3rem; }
+.header-info p { margin: 0; font-size: 0.8rem; color: #64748b; }
+
+.avatar-glow {
+    width: 40px; height: 40px;
+    background: var(--primary);
+    color: white;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* 4. SCROLL AREA (THE INNER CONTAINER) */
+.scroll-area {
+    padding: 25px 40px;
+    flex: 1;
+    overflow-y: auto; /* Only this area scrolls if content is too long */
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    display: flex; align-items: center; gap: 15px;
+    transition: transform 0.3s;
+}
+
+.stat-card:hover { transform: translateY(-3px); }
+
+/* Glow Effects */
+.glow-blue { box-shadow: 0 8px 20px var(--blue-glow); }
+.glow-purple { box-shadow: 0 8px 20px var(--purple-glow); }
+.glow-green { box-shadow: 0 8px 20px var(--green-glow); }
+
+.stat-icon-wrap {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+}
+
+.bg-blue { background: #eff6ff; color: #3b82f6; }
+.bg-purple { background: #faf5ff; color: #a855f7; }
+.bg-green { background: #f0fdf4; color: #22c55e; }
+
+.val { display: block; font-size: 1.5rem; font-weight: 800; color: var(--navy); }
+.lbl { font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
+
+/* 5. TABLE SECTION */
+.glass-effect {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100% - 140px); /* Keeps table within view */
+}
+
+.table-header {
+    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-scroll { overflow-y: auto; }
+
+.compact-table { width: 100%; border-collapse: collapse; }
+.compact-table th { background: #f8fafc; padding: 12px 25px; text-align: left; font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+.compact-table td { padding: 14px 25px; border-top: 1px solid #f1f5f9; font-size: 0.85rem; }
+
+.tag-math { background: #e0e7ff; color: #4338ca; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; }
+.tag-eng { background: #ffedd5; color: #9a3412; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; }
+
+.status { padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.7rem; }
+.done { background: #dcfce7; color: #166534; }
+.wait { background: #fef9c3; color: #854d0e; }
+
+/* --- SIGN OUT COLOR --- */
+.logout-link {
+    color: #ffffff !important; /* Change this hex code to change the color */
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    margin-top: auto; /* Pushes it to the bottom */
+    transition: 0.3s ease;
+}
+
+.logout-link:hover {
+    color: #ffffff !important; /* Color when you hover over it */
+    transform: translateX(5px); /* Subtle move effect */
+}
+
+/* ===============================
+   CLIENT DASHBOARD ONLY STYLES
+   =============================== */
+
+/* Quick action buttons - Updated to Dark Blue/White */
+/* --- LOGO FIX --- */
+/* --- 1. BRANDING: TUTORFLOW TEXT --- */
+/* Target all possible text containers in the logo area to force Dark Blue */
+/* --- 1. CLEAN THE BACKGROUND --- */
+/* This forces the background image OFF and sets the light color only for client */
+body.client {
+    background: #f4f7fe !important;
+    background-image: none !important;
+}
+
+/* --- 2. LOGO & BRANDING --- */
+/* Using body.client ensures 'TutorFlow' isn't blue on your other dashboard */
+body.client .sidebar-logo, 
+body.client .sidebar-logo span,
+body.client .sidebar h2 {
+    color: #1e3a8a !important; 
+    font-weight: 800 !important;
+    font-size: 24px !important;
+    display: flex;
+    align-items: center;
+}
+
+/* --- 3. SIDEBAR BACKGROUND --- */
+body.client .sidebar {
+    background: #ffffff !important; /* White sidebar */
+    border-right: 1px solid #f0f0f0;
+}
+
+body.client .nav-link {
+    color: #475569 !important; /* Grey menu items */
+}
+
+body.client .nav-link.active {
+    background: #6366f1 !important; /* Blue active tab */
+    color: #ffffff !important;
+}
+
+/* --- 4. QUICK ACTION BUTTONS --- */
+body.client .quick-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+body.client .quick-btn {
+    flex: 1; 
+    height: 52px;
+    padding: 0 20px;
+    background: #233876 !important; /* Dark Blue */
+    color: #ffffff !important;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+body.client .quick-btn i {
+    color: #ffffff !important;
+}
+
+/* --- 5. TABLE STYLING --- */
+body.client .upcoming-sessions-header {
+    background-color: #40b5e8 !important;
+    color: white !important;
+}
+
+/* --- 6. LOGOUT COLOR --- */
+body.client .logout-link {
+    color: #1e3a8a !important; /* Matches your blue theme */
 }
