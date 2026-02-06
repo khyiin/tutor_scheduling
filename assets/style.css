@@ -801,12 +801,6 @@ body.dashboard {
    CLIENT DASHBOARD ONLY STYLES
    =============================== */
 
-/* Quick action buttons - Updated to Dark Blue/White */
-/* --- LOGO FIX --- */
-/* --- 1. BRANDING: TUTORFLOW TEXT --- */
-/* Target all possible text containers in the logo area to force Dark Blue */
-/* --- 1. CLEAN THE BACKGROUND --- */
-/* This forces the background image OFF and sets the light color only for client */
 body.client {
     background: #f4f7fe !important;
     background-image: none !important;
@@ -877,3 +871,9 @@ body.client .upcoming-sessions-header {
 body.client .logout-link {
     color: #1e3a8a !important; /* Matches your blue theme */
 }
+
+/* ===============================
+   ADMIN DASHBOARD ONLY STYLES
+   =============================== */
+
+   

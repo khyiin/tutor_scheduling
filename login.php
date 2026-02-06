@@ -1,7 +1,6 @@
 <?php 
 session_start();
 include 'config.php';
-include 'header.php';
 
 if (isset($_POST['login'])) {
     $email    = mysqli_real_escape_string($conn, $_POST['email']);
@@ -12,28 +11,36 @@ if (isset($_POST['login'])) {
     $user = mysqli_fetch_assoc($result);
 
     if ($user && password_verify($password, $user['password'])) {
-        // 1. Save user info to Session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['name'] = $user['fullname'];
-        $_SESSION['role'] = $user['role']; // Storing the role for security checks
-
-        // 2. Redirect based on role
-        // Make sure these match the exact words in your database (e.g., 'teacher' vs 'Teacher')
-        if ($user['role'] == 'admin') {
-            header("Location: admin.php");
-        } elseif ($user['role'] == 'teacher') {
-            header("Location: dashboard.php");
-        } elseif ($user['role'] == 'client') {
-            header("Location: client.php");
+        if ($user['status'] !== 'Active') {
+            $error = "Your account is inactive. Contact admin.";
         } else {
-            // Fallback if role is undefined
-            header("Location: index.php");
+            // Save user info to session
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['name'] = $user['fullname'];
+            $_SESSION['role'] = $user['role']; // Usually "Admin", "Teacher", etc.
+
+            // Redirect based on role - Using strcasecmp for safety
+            if (strcasecmp($user['role'], 'Admin') == 0) {
+                header("Location: admin.php");
+                exit();
+            } elseif (strcasecmp($user['role'], 'Teacher') == 0) {
+                header("Location: dashboard.php");
+                exit();
+            } elseif (strcasecmp($user['role'], 'Client') == 0) {
+                header("Location: client.php");
+                exit();
+            } else {
+                header("Location: index.php");
+                exit();
+            }
         }
-        exit();
     } else {
         $error = "Invalid email or password";
     }
 }
+
+// Logic is finished, now we start outputting HTML
+include 'header.php'; 
 ?>
 
 <link rel="stylesheet" href="style.css">
