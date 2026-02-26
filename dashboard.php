@@ -27,10 +27,10 @@ $userName = htmlspecialchars($_SESSION['name']);
         </div>
         
         <nav class="sidebar-nav">
-            <a href="#" class="nav-link active"><i class="fas fa-grid-2"></i> Dashboard</a>
-            <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
-            <a href="#" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a>
-            <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="dashboard.php" class="nav-link active"><i class="fas fa-grid-2"></i> Dashboard</a>
+            <a href="teacher_schedule.php" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+            <a href="students.php" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a>
+            <a href="earnings.php" class="nav-link"><i class="fas fa-chart-line"></i> Earnings</a>
         </nav>
 
         <div class="sidebar-footer">
@@ -54,12 +54,12 @@ $userName = htmlspecialchars($_SESSION['name']);
         <div class="scroll-area">
 
             <div class="quick-actions">
-                <a href="#" class="quick-btn glow-blue">
+                <a href="teacher_schedule.php" class="quick-btn glow-blue">
                     <i class="fas fa-users"></i>
                     View Students
                 </a>
 
-                <a href="#" class="quick-btn glow-purple">
+                <a href="teacher_schedule.php" class="quick-btn glow-purple">
                     <i class="fas fa-calendar-check"></i>
                     Set Availability
                 </a>

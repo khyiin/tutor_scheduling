@@ -45,19 +45,19 @@ $userName = htmlspecialchars($_SESSION['name']);
                 <i class="fas fa-home"></i> Dashboard
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="find_tutor.php" class="nav-link">
                 <i class="fas fa-search"></i> Find Tutor
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="client_sessions.php" class="nav-link">
                 <i class="fas fa-calendar-check"></i> My Sessions
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="history.php" class="nav-link">
                 <i class="fas fa-clock"></i> History
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="profile.php" class="nav-link">
                 <i class="fas fa-user"></i> Profile
             </a>
         </nav>

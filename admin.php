@@ -1,15 +1,30 @@
 <?php
 session_start();
 include 'config.php'; // Ensure this connects to teacher_schedule_db
+include 'roles.php';
 
 // Access Control
-if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role']) !== 'admin') {
+if (!isset($_SESSION['user_id']) || strcasecmp($_SESSION['role'], Role::ADMIN) !== 0) {
     header("Location: login.php");
     exit();
 }
 
-// Fetch Users
-$sql = "SELECT id, fullname, email, role, status FROM users ORDER BY fullname ASC";
+// Pagination settings
+$perPage = 10;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $perPage;
+
+// Count total users for pagination
+$countResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM users");
+$totalRow = $countResult ? mysqli_fetch_assoc($countResult) : ['total' => 0];
+$totalUsers = (int)$totalRow['total'];
+$totalPages = $totalUsers > 0 ? ceil($totalUsers / $perPage) : 1;
+
+// Fetch Users with pagination
+$sql = "SELECT id, fullname, email, role, status 
+        FROM users 
+        ORDER BY fullname ASC 
+        LIMIT $perPage OFFSET $offset";
 $result = mysqli_query($conn, $sql);
 ?>
 
@@ -43,7 +58,7 @@ $result = mysqli_query($conn, $sql);
             <h2>User Management</h2>
         </div>
 
-        <div class="table-card">
+            <div class="table-card">
             <table>
                 <thead>
                     <tr>
@@ -75,6 +90,19 @@ $result = mysqli_query($conn, $sql);
             </table>
         </div>
 
+        <?php if ($totalPages > 1): ?>
+        <div class="pagination">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a 
+                    href="?page=<?= $i ?>" 
+                    class="page-link <?= $i === $page ? 'active' : '' ?>"
+                >
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+        </div>
+        <?php endif; ?>
+
         <div class="btn-container">
             <button class="btn-add" onclick="openAddModal()">
                 <i class="fas fa-plus"></i> Add User
@@ -100,9 +128,9 @@ $result = mysqli_query($conn, $sql);
             <div class="form-group">
                 <label>Role</label>
                 <select name="role" id="form_role">
-                    <option value="Admin">Admin</option>
-                    <option value="Teacher">Teacher</option>
-                    <option value="Client">Client</option>
+                    <option value="<?php echo Role::ADMIN; ?>">Admin</option>
+                    <option value="<?php echo Role::TEACHER; ?>">Teacher</option>
+                    <option value="<?php echo Role::STUDENT; ?>">Student</option>
                 </select>
             </div>
             <div class="form-group">

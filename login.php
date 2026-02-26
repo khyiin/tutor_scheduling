@@ -1,6 +1,7 @@
 <?php 
 session_start();
 include 'config.php';
+include 'roles.php';
 
 if (isset($_POST['login'])) {
     $email    = mysqli_real_escape_string($conn, $_POST['email']);
@@ -14,19 +15,19 @@ if (isset($_POST['login'])) {
         if ($user['status'] !== 'Active') {
             $error = "Your account is inactive. Contact admin.";
         } else {
-            // Save user info to session
+        // Save user info to session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['name'] = $user['fullname'];
             $_SESSION['role'] = $user['role']; // Usually "Admin", "Teacher", etc.
 
             // Redirect based on role - Using strcasecmp for safety
-            if (strcasecmp($user['role'], 'Admin') == 0) {
+            if (strcasecmp($user['role'], Role::ADMIN) == 0) {
                 header("Location: admin.php");
                 exit();
-            } elseif (strcasecmp($user['role'], 'Teacher') == 0) {
+            } elseif (strcasecmp($user['role'], Role::TEACHER) == 0) {
                 header("Location: dashboard.php");
                 exit();
-            } elseif (strcasecmp($user['role'], 'Client') == 0) {
+            } elseif (strcasecmp($user['role'], Role::STUDENT) == 0) {
                 header("Location: client.php");
                 exit();
             } else {
