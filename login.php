@@ -44,12 +44,12 @@ if (isset($_POST['login'])) {
 include 'header.php'; 
 ?>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/style.css">
 
 <div class="login-wrapper">
     <div class="login-container">
         <div class="login-image">
-            <img src="login.jpg" alt="Login Visual">
+            <img src="login_v2.png" alt="Secure Portal Login">
         </div>
 
         <div class="login-form-section">

@@ -133,67 +133,110 @@ input, select {
     width: 100vw;
     height: 100vh;
     margin: 0;
+    padding: 0;
     position: fixed;
     top: 0;
     left: 0;
-    background: #f4f7fe; /* Matches dashboard background */
+    background: #fff;
 }
 
+/* 2. Set the container to 100% width and height for a true split-screen */
 .login-container {
     display: flex;
     width: 100%;
     height: 100%;
     background: #fff;
+    border-radius: 0; /* Remove rounded corners for full-screen look */
     overflow: hidden;
 }
 
-/* 2. IMAGE SIDE */
+/* 3. Give both sides 'flex: 1' to force an exact 50% split */
 .login-image {
-    flex: 1.4;
+    flex: 1; /* Exactly 50% */
     display: block;
     height: 100%;
     position: relative;
 }
 
-/* Overlay to make the image blend with the theme */
-.login-image::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
-}
-
 .login-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Ensures the image fills its half without gaps */
 }
-
 /* 3. FORM SECTION */
 .login-form-section {
     flex: 1;
-    padding: 5% 6%;
+    padding: 40px 50px; /* Reduced padding to fit more fields */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; 
     background: #fff;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
-    z-index: 2;
+    height: 100%;
+    overflow-y: auto; /* Keeps it scrollable */
 }
 
+/* MATCHING HEADERS: Reduced from 5.2rem/2.5rem to a crisp 1.8rem */
 .login-form-section h2 {
-    margin-bottom: 10px !important;
-    font-size: 2.2rem !important; 
-    font-weight: 800 !important;
-    color: var(--navy);
-    text-align: center !important; /* Professional alignment */
+    font-size: 1.8rem !important; 
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+    letter-spacing: -0.5px !important;
 }
 
-.login-form-section p {
-    color: var(--text-muted);
-    margin-bottom: 40px;
-    font-size: 0.95rem;
+/* MATCHING INPUT GROUPS */
+.input-group {
+    margin-bottom: 15px; /* Tighter spacing */
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.8rem; /* Smaller, cleaner label */
+    color: #475569;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* MATCHING INPUTS & SELECTS */
+.input-group input, 
+.input-group select {
+    width: 100% !important;
+    padding: 12px 15px !important; /* Standard height */
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    font-size: 0.9rem !important; /* Smaller font for inputs */
+    background-color: #f8fafc !important;
+    transition: all 0.3s ease;
+}
+
+/* MATCHING BUTTONS */
+.login-btn {
+    all: unset;
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    background: linear-gradient(135deg, #54b4f3 0%, #3a9ad9 100%) !important;
+    color: #ffffff !important;
+    padding: 14px !important; /* Slightly more compact */
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(84, 180, 243, 0.3) !important;
+    margin-top: 10px;
+}
+
+/* SCROLLBAR STYLING (To keep it clean) */
+.login-form-section::-webkit-scrollbar {
+    width: 5px;
+}
+.login-form-section::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
 }
 
 /* 4. INPUTS WITH GLOW */
@@ -232,25 +275,29 @@ input, select {
 }
 
 /* 5. THE PRIMARY BUTTON */
+/* --- FIND THIS SECTION IN YOUR CSS --- */
 .login-btn {
     width: 100%;
     padding: 18px !important;
-    background: linear-gradient(135deg, var(--primary), #4f46e5) !important;
+    /* CHANGE THIS LINE BELOW */
+    background: linear-gradient(135deg, #54b4f3, #41a5e6) !important; 
     color: white !important;
     border: none !important;
-    border-radius: 14px !important; /* Matched to inputs */
+    border-radius: 14px !important;
     cursor: pointer !important;
     font-size: 1.1rem !important;
     font-weight: 700 !important;
     letter-spacing: 1px;
     transition: all 0.4s ease !important;
-    box-shadow: 0 10px 25px var(--primary-glow) !important;
+    /* CHANGE THIS LINE BELOW */
+    box-shadow: 0 10px 25px rgba(84, 180, 243, 0.4) !important;
     margin-top: 10px;
 }
 
 .login-btn:hover {
     transform: translateY(-4px) !important;
-    box-shadow: 0 15px 30px var(--primary-glow) !important;
+    /* CHANGE THIS LINE BELOW */
+    box-shadow: 0 15px 30px rgba(84, 180, 243, 0.5) !important;
     filter: brightness(1.1);
 }
 
@@ -886,5 +933,6 @@ body.client .logout-link {
 /* ===============================
    ADMIN DASHBOARD ONLY STYLES
    =============================== */
+   
 
    

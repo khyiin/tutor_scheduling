@@ -42,12 +42,12 @@ if (isset($_POST['register'])) {
 }
 ?>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/style.css">
 
 <div class="login-wrapper">
     <div class="login-container">
         <div class="login-image">
-            <img src="login.jpg" alt="Register Visual">
+            <img src="login_v2.png" alt="Register Visual">
         </div>
 
         <div class="login-form-section">
