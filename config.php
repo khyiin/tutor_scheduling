@@ -14,9 +14,21 @@ if (!$conn) {
 @mysqli_query($conn, "ALTER TABLE schedules ADD COLUMN IF NOT EXISTS start_time DATETIME NULL");
 @mysqli_query($conn, "ALTER TABLE schedules ADD COLUMN IF NOT EXISTS end_time DATETIME NULL");
 @mysqli_query($conn, "ALTER TABLE schedules ADD COLUMN IF NOT EXISTS created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
+@mysqli_query($conn, "ALTER TABLE schedules ADD COLUMN IF NOT EXISTS price DECIMAL(10,2) NOT NULL DEFAULT 0.00");
 
 // Ensure users table has created_at
 @mysqli_query($conn, "ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
+
+// Payments table for student transactions
+@mysqli_query($conn, "CREATE TABLE IF NOT EXISTS payments (
+      id int(11) NOT NULL AUTO_INCREMENT,
+      student_id int(11) NOT NULL,
+      session_request_id int(11) NOT NULL,
+      amount decimal(10,2) NOT NULL DEFAULT 0.00,
+      status enum('pending','processing','paid','failed') NOT NULL DEFAULT 'pending',
+      created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
 // CREATE session_requests table
 @mysqli_query($conn, "CREATE TABLE IF NOT EXISTS session_requests (
@@ -36,4 +48,8 @@ if (!$conn) {
       created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+// Extend earnings table to link back to student and session, when available
+@mysqli_query($conn, "ALTER TABLE earnings ADD COLUMN IF NOT EXISTS student_id int(11) NULL");
+@mysqli_query($conn, "ALTER TABLE earnings ADD COLUMN IF NOT EXISTS session_request_id int(11) NULL");
 ?>

@@ -8,25 +8,48 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$userName = htmlspecialchars($_SESSION['name']);
-$userEmail = "";
+$id = (int)$_SESSION['user_id'];
+$currentName = htmlspecialchars($_SESSION['name']);
+$currentEmail = '';
 $role = $_SESSION['role'] ?? '';
 
-$id = (int)$_SESSION['user_id'];
-$result = mysqli_query($conn, "SELECT email, role FROM users WHERE id = $id LIMIT 1");
+$result = mysqli_query($conn, "SELECT fullname, email, role FROM users WHERE id = $id LIMIT 1");
 if ($result && $row = mysqli_fetch_assoc($result)) {
-    $userEmail = htmlspecialchars($row['email']);
-    if ($role === '') $role = $row['role'];
+    $currentName = htmlspecialchars($row['fullname']);
+    $currentEmail = htmlspecialchars($row['email']);
+    if ($role === '') {
+        $role = $row['role'];
+    }
 }
+
 $isStudent = (strcasecmp($role, Role::STUDENT) === 0);
 $isTeacher = (strcasecmp($role, Role::TEACHER) === 0);
+
+$message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $newName = trim($_POST['fullname'] ?? '');
+    $newEmail = trim($_POST['email'] ?? '');
+
+    if ($newName && $newEmail) {
+        $safeName = mysqli_real_escape_string($conn, $newName);
+        $safeEmail = mysqli_real_escape_string($conn, $newEmail);
+        mysqli_query($conn, "UPDATE users SET fullname = '$safeName', email = '$safeEmail' WHERE id = $id");
+        $_SESSION['name'] = $newName;
+        $currentName = htmlspecialchars($newName);
+        $currentEmail = htmlspecialchars($newEmail);
+        $message = 'Profile updated successfully.';
+    } else {
+        $message = 'Please fill in all required fields.';
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TutorFlow | My Profile</title>
+    <title>TutorFlow | Edit Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -69,50 +92,43 @@ $isTeacher = (strcasecmp($role, Role::TEACHER) === 0);
     <main class="main-content">
         <header class="dashboard-header">
             <div class="header-info">
-                <h1>My Profile</h1>
-                <p>Review and manage your basic account information.</p>
+                <h1>Edit Profile</h1>
+                <p>Update your basic account information.</p>
             </div>
             <div class="user-pill">
                 <div class="avatar-glow">
-                    <?php echo strtoupper(substr($userName, 0, 1)); ?>
+                    <?php echo strtoupper(substr($currentName, 0, 1)); ?>
                 </div>
             </div>
         </header>
 
         <div class="scroll-area">
-            <div class="glass-effect page-card glow-card" style="display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
-                <div style="display:flex; flex-direction:column; align-items:center; min-width:180px;">
-                    <div class="avatar-glow" style="width:70px; height:70px; font-size:1.8rem; margin-bottom:10px;">
-                        <?php echo strtoupper(substr($userName, 0, 1)); ?>
-                    </div>
-                    <div style="text-align:center;">
-                        <div style="font-weight:700; font-size:1.05rem;"><?php echo $userName; ?></div>
-                        <div style="font-size:0.85rem; color:#6b7280; margin-top:2px;">
-                            <?php echo htmlspecialchars($role); ?>
-                        </div>
-                    </div>
-                    <a href="profile_edit.php" class="btn-glow" style="margin-top:10px; padding:6px 16px; font-size:0.8rem; border-radius:999px; text-decoration:none;">
-                        <i class="fas fa-pen"></i> Edit Profile
-                    </a>
+            <?php if ($message): ?>
+                <div class="page-card" style="background:#ecfdf3; border:1px solid #bbf7d0; margin-bottom:16px;">
+                    <p style="margin:0; color:#166534; font-size:0.9rem;">
+                        <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($message); ?>
+                    </p>
                 </div>
+            <?php endif; ?>
 
-                <div style="flex:1; min-width:220px;">
-                    <h3 style="margin-bottom:0.75rem;"><i class="fas fa-id-badge"></i> Account Details</h3>
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; font-size:0.9rem;">
-                        <div>
-                            <div style="text-transform:uppercase; font-size:0.7rem; color:#9ca3af; font-weight:600;">Full Name</div>
-                            <div><?php echo $userName; ?></div>
-                        </div>
-                        <div>
-                            <div style="text-transform:uppercase; font-size:0.7rem; color:#9ca3af; font-weight:600;">Email</div>
-                            <div><?php echo $userEmail; ?></div>
-                        </div>
-                        <div>
-                            <div style="text-transform:uppercase; font-size:0.7rem; color:#9ca3af; font-weight:600;">Role</div>
-                            <div><?php echo htmlspecialchars($role); ?></div>
-                        </div>
+            <div class="page-card glass-effect">
+                <form method="post">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="fullname" value="<?php echo $currentName; ?>" required>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" value="<?php echo $currentEmail; ?>" required>
+                    </div>
+
+                    <button type="submit" class="btn-glow" style="padding:10px 22px; font-size:0.95rem; border-radius:999px;">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="profile.php" style="margin-left:12px; font-size:0.85rem; color:#6b7280; text-decoration:none;">
+                        Cancel
+                    </a>
+                </form>
             </div>
         </div>
     </main>

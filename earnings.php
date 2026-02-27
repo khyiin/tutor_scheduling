@@ -9,6 +9,28 @@ if (!isset($_SESSION['user_id']) || strcasecmp($_SESSION['role'], Role::TEACHER)
 }
 
 $userName = htmlspecialchars($_SESSION['name']);
+$teacherId = (int)$_SESSION['user_id'];
+
+// Summary: total earnings for this teacher
+$summaryResult = mysqli_query(
+    $conn,
+    "SELECT COALESCE(SUM(amount), 0) AS total_amount
+     FROM earnings
+     WHERE teacher_id = $teacherId"
+);
+$summary = $summaryResult ? mysqli_fetch_assoc($summaryResult) : ['total_amount' => 0];
+
+// Recent payments list
+$paymentsResult = mysqli_query(
+    $conn,
+    "SELECT e.amount, e.created_at,
+            u.fullname AS student_name
+     FROM earnings e
+     LEFT JOIN users u ON u.id = e.student_id
+     WHERE e.teacher_id = $teacherId
+     ORDER BY e.created_at DESC
+     LIMIT 20"
+);
 ?>
 
 <!DOCTYPE html>
@@ -63,15 +85,17 @@ $userName = htmlspecialchars($_SESSION['name']);
                         <i class="fas fa-wallet"></i>
                     </div>
                     <div class="stat-txt">
-                        <span class="val">$0.00</span>
-                        <span class="lbl">Total Earnings (placeholder)</span>
+                        <span class="val">
+                            $<?php echo number_format((float)$summary['total_amount'], 2); ?>
+                        </span>
+                        <span class="lbl">Total Earnings</span>
                     </div>
                 </div>
             </div>
 
             <div class="table-frame glass-effect">
                 <div class="table-header">
-                    <h3><i class="fas fa-list-ul"></i> Recent Payments (placeholder)</h3>
+                    <h3><i class="fas fa-list-ul"></i> Recent Payments</h3>
                 </div>
                 <div class="table-scroll">
                     <table class="compact-table">
@@ -84,12 +108,22 @@ $userName = htmlspecialchars($_SESSION['name']);
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>-</td>
-                                <td>Coming soon</td>
-                                <td>$0.00</td>
-                                <td><span class="status wait">Placeholder</span></td>
-                            </tr>
+                            <?php if ($paymentsResult && mysqli_num_rows($paymentsResult) > 0): ?>
+                                <?php while ($row = mysqli_fetch_assoc($paymentsResult)): ?>
+                                    <tr>
+                                        <td><?php echo date('M j, Y g:i A', strtotime($row['created_at'])); ?></td>
+                                        <td><?php echo htmlspecialchars($row['student_name'] ?? 'Unknown'); ?></td>
+                                        <td>$<?php echo number_format((float)$row['amount'], 2); ?></td>
+                                        <td><span class="status done">Paid</span></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4" style="text-align:center; padding:24px; color:#9ca3af;">
+                                        No payments recorded yet. Once students pay for confirmed sessions, they will appear here.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

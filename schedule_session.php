@@ -40,7 +40,7 @@ if ($teacherId) {
 $slots = [];
 if ($teacher) {
     $slots = mysqli_query($conn,
-        "SELECT s.id, s.subject, s.day, s.time_start, s.time_end
+        "SELECT s.id, s.subject, s.day, s.time_start, s.time_end, s.price
          FROM schedules s
          WHERE s.teacher_id = " . (int)$teacher['id'] . "
          ORDER BY FIELD(s.day, 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'), s.time_start"
@@ -133,6 +133,7 @@ $teachersList = mysqli_query($conn,
                                     <th>Subject</th>
                                     <th>Day</th>
                                     <th>Time</th>
+                                    <th>Price</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -147,6 +148,7 @@ $teachersList = mysqli_query($conn,
                                             <td><span class="tag-math"><?php echo htmlspecialchars($slot['subject']); ?></span></td>
                                             <td><?php echo htmlspecialchars($slot['day']); ?></td>
                                             <td><?php echo htmlspecialchars(substr($slot['time_start'], 0, 5)); ?> – <?php echo htmlspecialchars(substr($slot['time_end'], 0, 5)); ?></td>
+                                            <td><?php echo '$' . number_format((float)$slot['price'], 2); ?></td>
                                             <td>
                                                 <?php if ($myStatus === 'confirmed'): ?>
                                                     <span class="status done">Confirmed</span>
@@ -156,13 +158,13 @@ $teachersList = mysqli_query($conn,
                                                     <form method="post" style="display:inline;">
                                                         <input type="hidden" name="schedule_id" value="<?php echo (int)$slot['id']; ?>">
                                                         <input type="hidden" name="teacher_id" value="<?php echo (int)$teacher['id']; ?>">
-                                                        <button type="submit" class="btn-glow" style="padding:6px 12px; font-size:0.8rem;"><i class="fas fa-redo"></i> Request again</button>
+                                                        <button type="submit" class="btn-glow" style="padding:5px 10px; font-size:0.75rem; border-radius:999px;"><i class="fas fa-redo"></i> Request again</button>
                                                     </form>
                                                 <?php else: ?>
                                                     <form method="post" style="display:inline;">
                                                         <input type="hidden" name="schedule_id" value="<?php echo (int)$slot['id']; ?>">
                                                         <input type="hidden" name="teacher_id" value="<?php echo (int)$teacher['id']; ?>">
-                                                        <button type="submit" class="btn-glow" style="padding:6px 12px; font-size:0.8rem;"><i class="fas fa-calendar-plus"></i> Request session</button>
+                                                        <button type="submit" class="btn-glow" style="padding:5px 10px; font-size:0.75rem; border-radius:999px;"><i class="fas fa-calendar-plus"></i> Request session</button>
                                                     </form>
                                                 <?php endif; ?>
                                             </td>

@@ -21,10 +21,11 @@ if (isset($_POST['register'])) {
     $status = 'Active';
 
     // Optional credential fields for future use
-    $studentId   = isset($_POST['student_id']) ? trim($_POST['student_id']) : '';
-    $studentProg = isset($_POST['student_program']) ? trim($_POST['student_program']) : '';
-    $teacherId   = isset($_POST['teacher_id']) ? trim($_POST['teacher_id']) : '';
-    $teacherSpec = isset($_POST['teacher_specialization']) ? trim($_POST['teacher_specialization']) : '';
+    $studentId        = isset($_POST['student_id']) ? trim($_POST['student_id']) : '';
+    $studentLevel     = isset($_POST['student_level']) ? trim($_POST['student_level']) : '';
+    $teacherId        = isset($_POST['teacher_id']) ? trim($_POST['teacher_id']) : '';
+    $teacherCerts     = isset($_POST['teacher_certifications']) ? trim($_POST['teacher_certifications']) : '';
+    $teacherIdVerify  = isset($_POST['teacher_id_verification']) ? trim($_POST['teacher_id_verification']) : '';
 
     // Check if email already exists
     $checkEmail = mysqli_query($conn, "SELECT email FROM users WHERE email='$email'");
@@ -81,16 +82,23 @@ if (isset($_POST['register'])) {
 
                 <!-- Student-specific credentials -->
                 <div class="input-group" id="studentCredentials">
-                    <label>Student Credentials</label>
+                    <label>Student Details</label>
                     <input type="text" name="student_id" placeholder="Student ID (optional)">
-                    <input type="text" name="student_program" placeholder="Course / Program (optional)" style="margin-top: 10px;">
+                    <select name="student_level" style="margin-top: 10px;">
+                        <option value="">Select Grade / Level</option>
+                        <option value="Elementary">Elementary</option>
+                        <option value="High School">High School</option>
+                        <option value="College">College</option>
+                        <option value="Adult Learner">Adult Learner</option>
+                    </select>
                 </div>
 
                 <!-- Teacher-specific credentials -->
                 <div class="input-group" id="teacherCredentials" style="display:none;">
                     <label>Teacher Credentials</label>
                     <input type="text" name="teacher_id" placeholder="Teacher ID (optional)">
-                    <input type="text" name="teacher_specialization" placeholder="Specialization / Department (optional)" style="margin-top: 10px;">
+                    <input type="text" name="teacher_certifications" placeholder="Certifications (e.g., diplomas, teaching licenses)" style="margin-top: 10px;">
+                    <input type="text" name="teacher_id_verification" placeholder="ID Verification (optional, for safety)" style="margin-top: 10px;">
                 </div>
                 
                 <button type="submit" name="register" class="login-btn">Sign Up</button>

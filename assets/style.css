@@ -821,6 +821,44 @@ body.dashboard {
     border-bottom: 1px solid #f1f5f9;
 }
 
+/* Professional pagination controls used across dashboards */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.pagination-label {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    font-weight: 500;
+}
+
+.btn-nav {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    transition: all 0.2s ease;
+}
+
+.btn-nav:hover {
+    background: #eff6ff;
+    color: #1d4ed8;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.18);
+    transform: translateY(-1px);
+}
+
 .table-scroll { overflow-y: auto; }
 
 .compact-table { width: 100%; border-collapse: collapse; }

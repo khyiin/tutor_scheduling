@@ -1,12 +1,38 @@
 <?php
 session_start();
+include 'config.php';
+include 'roles.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || strcasecmp($_SESSION['role'], Role::STUDENT) !== 0) {
     header("Location: login.php");
     exit();
 }
 
+$studentId = (int)$_SESSION['user_id'];
 $userName = htmlspecialchars($_SESSION['name']);
+
+// Find first unpaid confirmed session for alert
+$pendingPayment = null;
+$pendingQuery = mysqli_query(
+    $conn,
+    "SELECT sr.id, s.subject, s.day, s.time_start, s.time_end
+     FROM session_requests sr
+     INNER JOIN schedules s ON s.id = sr.schedule_id
+     LEFT JOIN payments p ON p.session_request_id = sr.id
+     WHERE sr.student_id = $studentId
+       AND sr.status = 'confirmed'
+       AND (p.id IS NULL OR p.status <> 'paid')
+     ORDER BY sr.created_at ASC
+     LIMIT 1"
+);
+if ($pendingQuery && mysqli_num_rows($pendingQuery) > 0) {
+    $pendingPayment = mysqli_fetch_assoc($pendingQuery);
+}
+
+// Simple stats placeholders – can be wired to real data later
+$statsToday = 0;
+$statsLessons = 0;
+$statsRating = 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,6 +122,26 @@ $userName = htmlspecialchars($_SESSION['name']);
 
         <div class="scroll-area">
 
+            <?php if ($pendingPayment): ?>
+                <div class="page-card glow-card" style="margin-bottom:16px; background:linear-gradient(135deg,#fef3c7,#fffbeb); border:1px solid #fbbf24;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <div style="font-size:0.9rem; color:#854d0e;">
+                            <strong>Payment pending</strong> for 
+                            <?php echo htmlspecialchars($pendingPayment['subject']); ?>
+                            on <?php echo htmlspecialchars($pendingPayment['day']); ?>
+                            at <?php echo htmlspecialchars(substr($pendingPayment['time_start'], 0, 5)); ?>.
+                        </div>
+                        <a 
+                            href="student_pay.php?session_id=<?php echo (int)$pendingPayment['id']; ?>"
+                            class="btn-glow"
+                            style="padding:6px 16px; font-size:0.8rem; border-radius:999px; text-decoration:none; white-space:nowrap;"
+                        >
+                            <i class="fas fa-credit-card"></i> Pay Now
+                        </a>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <!-- QUICK ACTION BUTTONS -->
             <div class="quick-actions">
 
@@ -117,7 +163,7 @@ $userName = htmlspecialchars($_SESSION['name']);
             </div>
 
 
-            <!-- STATS CARDS -->
+            <!-- STATS + FINANCES -->
             <div class="stats-grid">
 
                 <div class="stat-card glow-blue">
@@ -125,7 +171,7 @@ $userName = htmlspecialchars($_SESSION['name']);
                         <i class="fas fa-calendar-day"></i>
                     </div>
                     <div>
-                        <span class="val">3</span>
+                        <span class="val"><?php echo $statsToday; ?></span>
                         <span class="lbl">Today’s Sessions</span>
                     </div>
                 </div>
@@ -135,7 +181,7 @@ $userName = htmlspecialchars($_SESSION['name']);
                         <i class="fas fa-book"></i>
                     </div>
                     <div>
-                        <span class="val">18</span>
+                        <span class="val"><?php echo $statsLessons; ?></span>
                         <span class="lbl">Total Lessons</span>
                     </div>
                 </div>
@@ -145,8 +191,28 @@ $userName = htmlspecialchars($_SESSION['name']);
                         <i class="fas fa-star"></i>
                     </div>
                     <div>
-                        <span class="val">4.9</span>
+                        <span class="val"><?php echo number_format($statsRating, 1); ?></span>
                         <span class="lbl">Tutor Rating</span>
+                    </div>
+                </div>
+
+                <!-- My Finances widget -->
+                <div class="stat-card glow-green">
+                    <div class="stat-icon-wrap bg-green">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div>
+                        <span class="val">$0.00</span>
+                        <span class="lbl">My Finances (coming soon)</span>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <a 
+                            href="student_transactions.php" 
+                            class="btn-glow" 
+                            style="padding:6px 14px; font-size:0.8rem; border-radius:999px; text-decoration:none;"
+                        >
+                            View Transactions
+                        </a>
                     </div>
                 </div>
 

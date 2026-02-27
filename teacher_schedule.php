@@ -18,9 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slot'])) {
     $day = mysqli_real_escape_string($conn, trim($_POST['day'] ?? ''));
     $time_start = mysqli_real_escape_string($conn, $_POST['time_start'] ?? '');
     $time_end = mysqli_real_escape_string($conn, $_POST['time_end'] ?? '');
+    $price = isset($_POST['price']) ? (float)$_POST['price'] : 0.00;
     if ($subject && $day && $time_start && $time_end) {
-        $stmt = mysqli_prepare($conn, "INSERT INTO schedules (teacher_id, subject, day, time_start, time_end) VALUES (?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, 'issss', $teacherId, $subject, $day, $time_start, $time_end);
+        $stmt = mysqli_prepare($conn, "INSERT INTO schedules (teacher_id, subject, day, time_start, time_end, price) VALUES (?, ?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, 'issssd', $teacherId, $subject, $day, $time_start, $time_end, $price);
         if (mysqli_stmt_execute($stmt)) {
             $message = 'Session added successfully. Students can now see it on Schedule Session.';
         } else {
@@ -32,12 +33,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slot'])) {
     }
 }
 
+// Pagination for "Your Schedule"
+$limit = 5;
+$schedulePage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($schedulePage < 1) {
+    $schedulePage = 1;
+}
+$offset = ($schedulePage - 1) * $limit;
+
+// Total rows for pagination
+$scheduleCountResult = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total 
+     FROM schedules 
+     WHERE teacher_id = $teacherId"
+);
+$scheduleTotalRows = $scheduleCountResult ? (int)mysqli_fetch_assoc($scheduleCountResult)['total'] : 0;
+$scheduleTotalPages = $scheduleTotalRows > 0 ? ceil($scheduleTotalRows / $limit) : 1;
+
+// Paged schedule data
 $scheduleResult = mysqli_query(
     $conn,
-    "SELECT subject, day, time_start, time_end 
+    "SELECT subject, day, time_start, time_end, price 
      FROM schedules 
      WHERE teacher_id = $teacherId 
-     ORDER BY field(day, 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'), time_start"
+     ORDER BY field(day, 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'), time_start
+     LIMIT $limit OFFSET $offset"
 );
 ?>
 
@@ -130,14 +151,35 @@ $scheduleResult = mysqli_query(
                             <label>End time</label>
                             <input type="time" name="time_end" required>
                         </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" step="0.01" min="0" name="price" placeholder="e.g. 25.00">
+                        </div>
                     </div>
-                    <button type="submit" class="btn-glow" style="margin-top:0.5rem;"><i class="fas fa-plus"></i> Add Session</button>
+                    <button type="submit" class="btn-glow" style="margin-top:0.5rem; padding:8px 18px; font-size:0.85rem; border-radius:999px;">
+                        <i class="fas fa-plus"></i> Add Session
+                    </button>
                 </form>
             </div>
 
             <div class="glass-effect">
                 <div class="table-header">
                     <h3><i class="fas fa-calendar-day"></i> Your Schedule</h3>
+                    <div class="pagination-controls">
+                        <?php if ($schedulePage > 1): ?>
+                            <a href="?page=<?php echo $schedulePage - 1; ?>" class="btn-nav" aria-label="Previous page">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        <?php endif; ?>
+                        <span class="pagination-label">
+                            Page <?php echo $schedulePage; ?> of <?php echo $scheduleTotalPages; ?>
+                        </span>
+                        <?php if ($schedulePage < $scheduleTotalPages): ?>
+                            <a href="?page=<?php echo $schedulePage + 1; ?>" class="btn-nav" aria-label="Next page">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="table-scroll">
                     <table class="compact-table">
@@ -147,6 +189,7 @@ $scheduleResult = mysqli_query(
                                 <th>Day</th>
                                 <th>Start</th>
                                 <th>End</th>
+                                <th>Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,6 +200,7 @@ $scheduleResult = mysqli_query(
                                         <td><?php echo htmlspecialchars($row['day']); ?></td>
                                         <td><?php echo htmlspecialchars(substr($row['time_start'], 0, 5)); ?></td>
                                         <td><?php echo htmlspecialchars(substr($row['time_end'], 0, 5)); ?></td>
+                                        <td><?php echo '$' . number_format((float)$row['price'], 2); ?></td>
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>

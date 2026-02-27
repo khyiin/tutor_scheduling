@@ -11,14 +11,32 @@ if (!isset($_SESSION['user_id']) || strcasecmp($_SESSION['role'], Role::STUDENT)
 
 $userName = htmlspecialchars($_SESSION['name']);
 
-// FIXED: Added 'id' to the SELECT statement so the schedule link works.
-// Also added 'bio' (assuming you have a bio or specialization column in your users table)
+// Pagination for Find Tutor
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) {
+    $page = 1;
+}
+$offset = ($page - 1) * $limit;
+
+// Total tutors for pagination
+$totalTeachersResult = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) AS total
+     FROM users 
+     WHERE role = '" . Role::TEACHER . "'"
+);
+$totalTeachersRows = $totalTeachersResult ? (int)mysqli_fetch_assoc($totalTeachersResult)['total'] : 0;
+$totalPages = $totalTeachersRows > 0 ? ceil($totalTeachersRows / $limit) : 1;
+
+// Paged tutors list
 $teachers = mysqli_query(
     $conn,
     "SELECT id, fullname, email 
      FROM users 
      WHERE role = '" . Role::TEACHER . "' 
-     ORDER BY fullname ASC"
+     ORDER BY fullname ASC
+     LIMIT $limit OFFSET $offset"
 );
 ?>
 
@@ -75,6 +93,21 @@ $teachers = mysqli_query(
             <div class="client-table glass-effect">
                 <div class="table-header">
                     <h3><i class="fas fa-user-graduate"></i> Available Tutors</h3>
+                    <div class="pagination-controls">
+                        <?php if ($page > 1): ?>
+                            <a href="?page=<?php echo $page - 1; ?>" class="btn-nav" aria-label="Previous page">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        <?php endif; ?>
+                        <span class="pagination-label">
+                            Page <?php echo $page; ?> of <?php echo $totalPages; ?>
+                        </span>
+                        <?php if ($page < $totalPages): ?>
+                            <a href="?page=<?php echo $page + 1; ?>" class="btn-nav" aria-label="Next page">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="table-scroll">
                     <table class="compact-table">
