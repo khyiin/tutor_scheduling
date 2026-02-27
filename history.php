@@ -36,6 +36,7 @@ $userName = htmlspecialchars($_SESSION['name']);
         <nav class="sidebar-nav">
             <a href="client.php" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
             <a href="find_tutor.php" class="nav-link"><i class="fas fa-search"></i> Find Tutor</a>
+            <a href="schedule_session.php" class="nav-link"><i class="fas fa-calendar-plus"></i> Schedule Session</a>
             <a href="client_sessions.php" class="nav-link"><i class="fas fa-calendar-check"></i> My Sessions</a>
             <a href="history.php" class="nav-link active"><i class="fas fa-clock"></i> History</a>
             <a href="profile.php" class="nav-link"><i class="fas fa-user"></i> Profile</a>

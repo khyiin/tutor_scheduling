@@ -49,6 +49,10 @@ $userName = htmlspecialchars($_SESSION['name']);
                 <i class="fas fa-search"></i> Find Tutor
             </a>
 
+            <a href="schedule_session.php" class="nav-link">
+                <i class="fas fa-calendar-plus"></i> Schedule Session
+            </a>
+
             <a href="client_sessions.php" class="nav-link">
                 <i class="fas fa-calendar-check"></i> My Sessions
             </a>
@@ -95,12 +99,12 @@ $userName = htmlspecialchars($_SESSION['name']);
             <!-- QUICK ACTION BUTTONS -->
             <div class="quick-actions">
 
-                <a href="#" class="quick-btn glow-blue">
+                <a href="find_tutor.php" class="quick-btn glow-blue">
                     <i class="fas fa-search"></i>
                     Book Tutor
                 </a>
 
-                <a href="#" class="quick-btn glow-purple">
+                <a href="schedule_session.php" class="quick-btn glow-purple">
                     <i class="fas fa-calendar-plus"></i>
                     Schedule Session
                 </a>

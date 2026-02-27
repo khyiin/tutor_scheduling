@@ -35,6 +35,7 @@ $userName = htmlspecialchars($_SESSION['name']);
             <a href="teacher_schedule.php" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
             <a href="students.php" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a>
             <a href="earnings.php" class="nav-link active"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="profile.php" class="nav-link"><i class="fas fa-user"></i> Profile</a>
         </nav>
 
         <div class="sidebar-footer">
